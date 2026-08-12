@@ -1,0 +1,35 @@
+# Entorno virtual
+.venv/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDEs
+.vscode/
+.idea/
+
+# Variables de entorno / secretos
+.env
+*.env
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Audio generado
+*.wav
+*.mp3
+*.ogg
+
+# Archivos de prueba
+test_output/
