@@ -33,3 +33,6 @@ Thumbs.db
 
 # Archivos de prueba
 test_output/
+
+# MediaPipe models
+Models/*.task
