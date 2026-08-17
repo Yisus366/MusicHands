@@ -8,24 +8,9 @@ FRAME_HEIGHT = 720
 MODEL_PATH = (
     Path(__file__).resolve().parent.parent
     / "Models"
-    / "hand_landmarker.task"
-)
+    / "hand_landmarker.task")
 if not MODEL_PATH.exists():
-
-    raise FileNotFoundError(
-        f"""
-No se encontró el modelo de MediaPipe.
-
-Ruta esperada:
-{MODEL_PATH}
-
-Coloca el archivo:
-hand_landmarker.task
-
-dentro de:
-Models/
-"""
-)
+    raise FileNotFoundError(f"No se encontró el modelo de MediaPipe. Ruta esperada: {MODEL_PATH} Coloca el archivo: hand_landmarker.task dentro de: Models")
 print("Cargando modelo de MediaPipe...")
 model_buffer = MODEL_PATH.read_bytes()
 print(f"Modelo cargado: {len(model_buffer):,} bytes")
