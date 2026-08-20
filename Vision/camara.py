@@ -3,6 +3,7 @@ import mediapipe as mp
 import time
 from pathlib import Path
 from handData import HandData
+from fingerCounter import FingerCounter
 CAMERA_INDEX = 0
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
@@ -83,6 +84,7 @@ if not camera.isOpened():
 timestamp_ms = 0
 previous_time = time.perf_counter()
 fps = 0.0
+finger_counter = FingerCounter()
 print("Hand Landmarker listo.")
 print("Iniciando cámara...")
 print("\nPresiona Q para salir.\n")
@@ -110,12 +112,17 @@ with HandLandmarker.create_from_options(options) as landmarker:
                 elif hand_label == "Right":
                     hand_label = "Left"
                 hand = HandData(label=hand_label,confidence=confidence,landmarks=hand_landmarks)
+                finger_state = finger_counter.analyze(hand.landmarks)
+                hand.fingers = finger_state
+                hand.update_finger_count()
+                finger_pattern = finger_counter.pattern(hand.fingers)
                 draw_landmarks(frame,hand.landmarks)
                 wrist = (hand.landmarks[0])
                 x = int(wrist.x * frame.shape[1])
                 y = int(wrist.y * frame.shape[0])
                 cv2.putText(frame,f"{hand.label} {hand.confidence:.2f}",(x, y - 20),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0, 255, 255),2)
                 cv2.putText(frame,f"Fingers: {hand.finger_count}",(x, y + 10),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255, 255, 255),1)
+                cv2.putText(frame,f"Pattern: {finger_pattern}",(x, y + 54),cv2.FONT_HERSHEY_SIMPLEX,0.45,(255, 255, 255),1)
                 cv2.putText(frame,f"Gesture: {hand.gesture}",(x, y + 32),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255, 255, 255),1)
                 print(hand)
         current_time = (time.perf_counter())
