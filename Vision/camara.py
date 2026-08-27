@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 from handData import HandData
 from fingerCounter import FingerCounter
+from handGeometry import HandGeometry
 CAMERA_INDEX = 0
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
@@ -85,6 +86,8 @@ timestamp_ms = 0
 previous_time = time.perf_counter()
 fps = 0.0
 finger_counter = FingerCounter()
+hand_geometry = HandGeometry()
+
 print("Hand Landmarker listo.")
 print("Iniciando cámara...")
 print("\nPresiona Q para salir.\n")
@@ -115,6 +118,7 @@ with HandLandmarker.create_from_options(options) as landmarker:
                 finger_state = finger_counter.analyze(hand.landmarks)
                 hand.fingers = finger_state
                 hand.update_finger_count()
+                hand.angle = hand_geometry.musical_angle(hand.landmarks)
                 finger_pattern = finger_counter.pattern(hand.fingers)
                 draw_landmarks(frame,hand.landmarks)
                 wrist = (hand.landmarks[0])
@@ -124,6 +128,7 @@ with HandLandmarker.create_from_options(options) as landmarker:
                 cv2.putText(frame,f"Fingers: {hand.finger_count}",(x, y + 10),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255, 255, 255),1)
                 cv2.putText(frame,f"Pattern: {finger_pattern}",(x, y + 54),cv2.FONT_HERSHEY_SIMPLEX,0.45,(255, 255, 255),1)
                 cv2.putText(frame,f"Gesture: {hand.gesture}",(x, y + 32),cv2.FONT_HERSHEY_SIMPLEX,0.55,(255, 255, 255),1)
+                cv2.putText(frame,f"Angle: {hand.angle:.1f} deg",(x, y + 76),cv2.FONT_HERSHEY_SIMPLEX,0.45,(255, 255, 255),1)
                 print(hand)
         current_time = (time.perf_counter())
         delta = (current_time - previous_time)
